@@ -100,6 +100,7 @@ import platformAlertsRouter from "./platformAlerts";
 import tenantBillingRouter from "./tenantBilling";
 import tenantComparisonRouter from "./tenantComparison";
 import superAdminDeleteRouter from "./superAdminDelete";
+import impersonationRouter from "./impersonation";
 
 const router: IRouter = Router();
 
@@ -204,5 +205,6 @@ router.use("/platform-alerts", platformAlertsRouter);
 router.use("/tenant-billing", tenantBillingRouter);
 router.use("/tenant-comparison", tenantComparisonRouter);
 router.use("/super-admin/delete", superAdminDeleteRouter);
+router.use("/admin/impersonate", impersonationRouter);
 
 export default router;

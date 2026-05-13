@@ -2,11 +2,12 @@ import { useState, useCallback, useEffect } from 'react';
 import { useListTenants, useCreateTenant, useUpdateTenant, getListTenantsQueryKey } from '@workspace/api-client-react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useLanguage } from '@/contexts/LanguageContext';
+import { useImpersonation } from '@/contexts/ImpersonationContext';
 import { formatDate, cn } from '@/lib/utils';
 import {
   Building2, Plus, ShieldCheck, Mail, Loader2, CheckCircle2, XCircle,
   Settings, CreditCard, Package, Layers, Landmark, FileCheck2, PiggyBank, UserCheck,
-  Users, Pencil, KeyRound, Phone, User, Badge,
+  Users, Pencil, KeyRound, Phone, User, Badge, UserCog,
   ToggleLeft, ToggleRight, Eye, EyeOff, DollarSign, Receipt, Percent,
   TrendingUp, AlertTriangle, BarChart3, Save, Activity, PieChart,
   Globe, ClipboardList, Bell, Shield, Send,
@@ -477,8 +478,9 @@ const ROLE_COLORS: Record<string, string> = {
   CFO: 'bg-rose-500/20 text-rose-300 border-rose-500/30',
 };
 
-function UserRow({ user, tenantId, branches, onRefresh, t, isRtl }: {
+function UserRow({ user, tenantId, branches, onRefresh, onImpersonate, t, isRtl }: {
   user: any; tenantId: string; branches: any[]; onRefresh: () => void;
+  onImpersonate: (user: any) => void;
   t: (ar: string, en: string) => string; isRtl: boolean;
 }) {
   const { toast } = useToast();
@@ -589,9 +591,18 @@ function UserRow({ user, tenantId, branches, onRefresh, t, isRtl }: {
           : <span className="flex items-center gap-1 text-red-400 text-xs"><XCircle size={12} /> {t('معطّل', 'Inactive')}</span>}
       </td>
       <td className="px-4 py-3">
-        <button onClick={() => setEditing(true)} className="px-3 py-1 bg-secondary hover:bg-secondary/80 rounded-lg text-xs flex items-center gap-1 font-medium">
-          <Pencil size={11} /> {t('تعديل', 'Edit')}
-        </button>
+        <div className="flex items-center gap-2">
+          <button onClick={() => setEditing(true)} className="px-3 py-1 bg-secondary hover:bg-secondary/80 rounded-lg text-xs flex items-center gap-1 font-medium">
+            <Pencil size={11} /> {t('تعديل', 'Edit')}
+          </button>
+          <button
+            onClick={() => onImpersonate(user)}
+            className="px-3 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-400 border border-amber-500/30 rounded-lg text-xs flex items-center gap-1 font-medium transition-colors"
+            title={t('انتحال هوية هذا المستخدم', 'Impersonate this user')}
+          >
+            <UserCog size={11} /> {t('انتحال', 'Impersonate')}
+          </button>
+        </div>
       </td>
     </tr>
   );
@@ -600,10 +611,14 @@ function UserRow({ user, tenantId, branches, onRefresh, t, isRtl }: {
 function UsersTab({ tenant, t, isRtl }: { tenant: any; t: (ar: string, en: string) => string; isRtl: boolean }) {
   const { toast } = useToast();
   const queryClient = useQueryClient();
+  const { startImpersonation } = useImpersonation();
   const [showAdd, setShowAdd] = useState(false);
   const [showPwd, setShowPwd] = useState(false);
   const [addForm, setAddForm] = useState({ fullName: '', email: '', password: '', role: 'LoanOfficer', branchId: '', isSuperUser: false });
   const [adding, setAdding] = useState(false);
+  const [impersonateTarget, setImpersonateTarget] = useState<any | null>(null);
+  const [impersonateReason, setImpersonateReason] = useState('');
+  const [impersonating, setImpersonating] = useState(false);
 
   const { data: users, isLoading, refetch } = useQuery({
     queryKey: ['sa-users', tenant.id],
@@ -634,8 +649,73 @@ function UsersTab({ tenant, t, isRtl }: { tenant: any; t: (ar: string, en: strin
     }
   };
 
+  const handleImpersonateConfirm = async () => {
+    if (!impersonateTarget || !impersonateReason.trim()) return;
+    setImpersonating(true);
+    try {
+      await startImpersonation(impersonateTarget.id, tenant.id, impersonateReason.trim());
+    } catch (err: any) {
+      toast({ variant: 'destructive', title: t('خطأ', 'Error'), description: err.message });
+      setImpersonating(false);
+    }
+  };
+
   return (
     <div className="space-y-4">
+      {impersonateTarget && (
+        <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-5">
+            <div className="flex items-start gap-3">
+              <div className="w-10 h-10 rounded-full bg-amber-500/10 border border-amber-500/30 flex items-center justify-center shrink-0">
+                <UserCog size={20} className="text-amber-400" />
+              </div>
+              <div>
+                <h3 className="text-base font-bold">{t('انتحال هوية مستخدم', 'Impersonate User')}</h3>
+                <p className="text-xs text-muted-foreground mt-0.5">
+                  {t('ستتحكم في الجلسة باسم', 'You will take control of the session as')}:{' '}
+                  <span className="font-semibold text-foreground">{impersonateTarget.fullName}</span>
+                  {' '}({impersonateTarget.email})
+                </p>
+              </div>
+            </div>
+            <div className="bg-amber-500/5 border border-amber-500/20 rounded-xl p-3 text-xs text-amber-400 flex items-start gap-2">
+              <AlertTriangle size={14} className="shrink-0 mt-0.5" />
+              <span>{t('جميع الإجراءات التي ستتخذها أثناء هذه الجلسة ستُسجَّل في سجل تدقيق المستأجر وسجل المنصة.', 'All actions taken during this session will be logged in the tenant audit trail and the platform audit log.')}</span>
+            </div>
+            <div className="space-y-2">
+              <label className="text-xs font-semibold text-foreground">
+                {t('سبب الانتحال', 'Reason for impersonation')} <span className="text-destructive">*</span>
+              </label>
+              <textarea
+                className="premium-input text-sm py-2 resize-none w-full"
+                rows={3}
+                placeholder={t('اكتب سبباً واضحاً ومحدداً...', 'Write a clear, specific reason...')}
+                value={impersonateReason}
+                onChange={e => setImpersonateReason(e.target.value)}
+                autoFocus
+              />
+              <p className="text-[10px] text-muted-foreground">{t('الحد الأدنى', 'Minimum')} 10 {t('أحرف', 'characters')} · {impersonateReason.length}/500</p>
+            </div>
+            <div className="flex gap-2 pt-1">
+              <button
+                onClick={handleImpersonateConfirm}
+                disabled={impersonating || impersonateReason.trim().length < 10}
+                className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-amber-950 rounded-xl text-sm font-semibold disabled:opacity-50 transition-colors"
+              >
+                {impersonating ? <Loader2 size={14} className="animate-spin" /> : <UserCog size={14} />}
+                {t('بدء الجلسة', 'Start Session')}
+              </button>
+              <button
+                onClick={() => { setImpersonateTarget(null); setImpersonateReason(''); }}
+                disabled={impersonating}
+                className="px-4 py-2 bg-secondary hover:bg-secondary/80 rounded-xl text-sm font-medium disabled:opacity-50"
+              >
+                {t('إلغاء', 'Cancel')}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="flex items-center justify-between">
         <div>
           <p className="text-sm font-semibold">{t('المستخدمون', 'Users')}</p>
@@ -718,7 +798,7 @@ function UsersTab({ tenant, t, isRtl }: { tenant: any; t: (ar: string, en: strin
             </thead>
             <tbody className="divide-y divide-border">
               {(users as any[])?.map((user: any) => (
-                <UserRow key={user.id} user={user} tenantId={tenant.id} branches={branches as any[]} onRefresh={refetch} t={t} isRtl={isRtl} />
+                <UserRow key={user.id} user={user} tenantId={tenant.id} branches={branches as any[]} onRefresh={refetch} onImpersonate={setImpersonateTarget} t={t} isRtl={isRtl} />
               ))}
               {(users as any[])?.length === 0 && (
                 <tr>

@@ -9,6 +9,10 @@ export interface AuthUser {
   email: string;
   fullName: string;
   branchId?: string;
+  isImpersonation?: boolean;
+  impersonatedBy?: string;
+  impersonatedByName?: string;
+  impersonationReason?: string;
 }
 
 declare global {
@@ -39,6 +43,16 @@ function base64UrlDecode(str: string): string {
 export function signToken(payload: AuthUser): string {
   const header = base64UrlEncode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
   const body = base64UrlEncode(JSON.stringify({ ...payload, iat: Date.now(), exp: Date.now() + 7 * 24 * 60 * 60 * 1000 }));
+  const signature = crypto
+    .createHmac("sha256", EFFECTIVE_JWT_SECRET)
+    .update(`${header}.${body}`)
+    .digest("base64url");
+  return `${header}.${body}.${signature}`;
+}
+
+export function signImpersonationToken(payload: AuthUser, expiresInMs = 60 * 60 * 1000): string {
+  const header = base64UrlEncode(JSON.stringify({ alg: "HS256", typ: "JWT" }));
+  const body = base64UrlEncode(JSON.stringify({ ...payload, iat: Date.now(), exp: Date.now() + expiresInMs }));
   const signature = crypto
     .createHmac("sha256", EFFECTIVE_JWT_SECRET)
     .update(`${header}.${body}`)

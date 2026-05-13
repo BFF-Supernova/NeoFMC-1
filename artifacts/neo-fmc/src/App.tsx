@@ -6,6 +6,7 @@ import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { LanguageProvider } from "@/contexts/LanguageContext";
 import { ThemeProvider } from "@/contexts/ThemeContext";
 import { TenantProvider } from "@/contexts/TenantContext";
+import { ImpersonationProvider } from "@/contexts/ImpersonationContext";
 import { AppLayout } from "@/components/layout/AppLayout";
 import NotFound from "@/pages/not-found";
 
@@ -365,10 +366,12 @@ function App() {
           <ThemeProvider>
             <LanguageProvider>
               <AuthProvider>
-                <TenantProvider>
-                  <Router />
-                  <Toaster />
-                </TenantProvider>
+                <ImpersonationProvider>
+                  <TenantProvider>
+                    <Router />
+                    <Toaster />
+                  </TenantProvider>
+                </ImpersonationProvider>
               </AuthProvider>
             </LanguageProvider>
           </ThemeProvider>
