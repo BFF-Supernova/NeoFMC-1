@@ -945,17 +945,48 @@ function SubscriptionTab({ tenant, t, isRtl, onToggleFeature, featureToggling }:
       </div>
 
       <div className="border-t border-border pt-5">
-        <p className="text-sm font-semibold mb-3 flex items-center gap-2"><ShieldCheck size={14} /> {t('التكاملات والخدمات', 'Integrations & Services')}</p>
+        <p className="text-sm font-semibold mb-1 flex items-center gap-2"><ShieldCheck size={14} /> {t('تفعيل الموديولات والميزات', 'Module Feature Flags')}</p>
+        <p className="text-xs text-muted-foreground mb-3">{t('تفعيل أو تعطيل كل موديول لهذه الشركة مباشرةً', 'Toggle each system module on or off for this company')}</p>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {MODULE_DEFINITIONS.map(mod => {
+            const sub = getModuleSub(mod.key);
+            const isEnabled = sub?.isActive ?? false;
+            const Icon = mod.icon;
+            const colors = COLOR_MAP[mod.color];
+            return (
+              <div
+                key={mod.key}
+                className={cn(
+                  'flex items-center gap-3 p-3 rounded-xl border transition-all',
+                  isEnabled ? 'border-primary/30 bg-primary/5' : 'border-border bg-secondary/20'
+                )}
+              >
+                <div className={cn('w-8 h-8 rounded-lg flex items-center justify-center shrink-0', colors.bg)}>
+                  <Icon size={15} className={colors.text} />
+                </div>
+                <div className="flex-1 min-w-0">
+                  <p className="text-xs font-semibold truncate">{isRtl ? mod.nameAr : mod.nameEn}</p>
+                  <p className="text-[10px] text-muted-foreground line-clamp-1">{isRtl ? mod.descAr : mod.descEn}</p>
+                </div>
+                <ToggleSwitch
+                  enabled={isEnabled}
+                  onChange={v => saveModuleSub(mod.key, { isActive: v })}
+                  label=""
+                  disabled={savingModule === mod.key}
+                />
+              </div>
+            );
+          })}
+        </div>
+
+        <p className="text-sm font-semibold mt-6 mb-2 flex items-center gap-2"><CreditCard size={14} /> {t('بوابات الدفع الإلكتروني وخدمات خارجية', 'E-Payment Gateways & External Services')}</p>
         <div className="bg-secondary/50 rounded-xl p-4 space-y-1">
           <ToggleSwitch
-            label={t('تفعيل I-Score الاستعلام الائتماني', 'Enable I-Score Credit Bureau')}
+            label={t('تفعيل I-Score — الاستعلام الائتماني', 'Enable I-Score Credit Bureau')}
             enabled={tenant.iscoreEnabled || false}
             onChange={() => onToggleFeature('iscoreEnabled', tenant.iscoreEnabled || false)}
             disabled={featureToggling}
           />
-        </div>
-        <p className="text-sm font-semibold mt-4 mb-2 flex items-center gap-2"><CreditCard size={14} /> {t('بوابات الدفع الإلكتروني', 'E-Payment Gateways')}</p>
-        <div className="bg-secondary/50 rounded-xl p-4 space-y-1">
           {['epaymentFawryEnabled:Fawry', 'epaymentOpayEnabled:OPay', 'epaymentKhaznaEnabled:Khazna', 'epaymentMeezaEnabled:Meeza'].map(item => {
             const [field, label] = item.split(':');
             return (
@@ -1280,6 +1311,116 @@ function GlobalPricingPanel({ t, isRtl }: { t: (ar: string, en: string) => strin
             </tbody>
           </table>
         </div>
+      </div>
+
+      <PlanDefinitionsPanel t={t} isRtl={isRtl} />
+    </div>
+  );
+}
+
+const PLAN_DEFAULTS: Record<string, string[]> = {
+  Basic: ['moduleCoreBasic'],
+  Edge: ['moduleCoreBasic', 'moduleCoreEdge', 'moduleFinancialSettlements', 'moduleSavings'],
+  Enterprise: MODULE_DEFINITIONS.map(m => m.key),
+};
+
+function PlanDefinitionsPanel({ t, isRtl }: { t: (ar: string, en: string) => string; isRtl: boolean }) {
+  const { toast } = useToast();
+  const STORAGE_KEY = 'neo_fmc_plan_definitions';
+  const [plans, setPlans] = useState<Record<string, string[]>>(() => {
+    try {
+      const stored = localStorage.getItem(STORAGE_KEY);
+      return stored ? JSON.parse(stored) : PLAN_DEFAULTS;
+    } catch {
+      return PLAN_DEFAULTS;
+    }
+  });
+  const [saving, setSaving] = useState(false);
+
+  const toggleModule = (plan: string, moduleKey: string) => {
+    setPlans(prev => {
+      const current = prev[plan] || [];
+      const next = current.includes(moduleKey)
+        ? current.filter(k => k !== moduleKey)
+        : [...current, moduleKey];
+      return { ...prev, [plan]: next };
+    });
+  };
+
+  const handleSave = () => {
+    setSaving(true);
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(plans));
+    setTimeout(() => {
+      setSaving(false);
+      toast({ title: t('نجاح', 'Success'), description: t('تم حفظ تعريفات الباقات', 'Plan definitions saved') });
+    }, 400);
+  };
+
+  const PLAN_STYLES: Record<string, { bg: string; text: string; border: string; badge: string }> = {
+    Basic: { bg: 'bg-blue-500/10', text: 'text-blue-400', border: 'border-blue-500/30', badge: 'bg-blue-500' },
+    Edge: { bg: 'bg-violet-500/10', text: 'text-violet-400', border: 'border-violet-500/30', badge: 'bg-violet-500' },
+    Enterprise: { bg: 'bg-amber-500/10', text: 'text-amber-400', border: 'border-amber-500/30', badge: 'bg-amber-500' },
+  };
+
+  return (
+    <div className="border-t border-border pt-5 space-y-4">
+      <div className="flex items-center justify-between">
+        <div>
+          <p className="text-sm font-semibold flex items-center gap-2"><Layers size={14} /> {t('تعريف الباقات', 'Plan Definitions')}</p>
+          <p className="text-xs text-muted-foreground mt-0.5">{t('حدد الموديولات المضمنة في كل باقة', 'Define which modules are included in each subscription plan')}</p>
+        </div>
+        <button
+          onClick={handleSave}
+          disabled={saving}
+          className="flex items-center gap-1.5 px-4 py-2 bg-primary hover:bg-primary/90 text-white rounded-xl text-xs font-medium shadow-lg shadow-primary/20 disabled:opacity-50"
+        >
+          {saving ? <Loader2 size={13} className="animate-spin" /> : <Save size={13} />}
+          {t('حفظ', 'Save')}
+        </button>
+      </div>
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        {(['Basic', 'Edge', 'Enterprise'] as const).map(plan => {
+          const style = PLAN_STYLES[plan];
+          const included = plans[plan] || [];
+          return (
+            <div key={plan} className={cn('rounded-xl border p-4 space-y-3', style.bg, style.border)}>
+              <div className="flex items-center justify-between">
+                <span className={cn('text-sm font-bold', style.text)}>{plan}</span>
+                <span className={cn('text-[10px] px-2 py-0.5 rounded-full text-white font-medium', style.badge)}>
+                  {included.length} {t('موديول', 'modules')}
+                </span>
+              </div>
+              <div className="space-y-1.5 max-h-80 overflow-y-auto custom-scrollbar pr-1">
+                {MODULE_DEFINITIONS.map(mod => {
+                  const Icon = mod.icon;
+                  const colors = COLOR_MAP[mod.color];
+                  const checked = included.includes(mod.key);
+                  return (
+                    <label
+                      key={mod.key}
+                      className={cn(
+                        'flex items-center gap-2 p-2 rounded-lg cursor-pointer transition-colors',
+                        checked ? 'bg-white/5' : 'hover:bg-white/5 opacity-50'
+                      )}
+                    >
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        onChange={() => toggleModule(plan, mod.key)}
+                        className="w-3.5 h-3.5 rounded accent-primary shrink-0"
+                      />
+                      <div className={cn('w-6 h-6 rounded-md flex items-center justify-center shrink-0', colors.bg)}>
+                        <Icon size={12} className={colors.text} />
+                      </div>
+                      <span className="text-[11px] font-medium leading-tight">{isRtl ? mod.nameAr : mod.nameEn}</span>
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          );
+        })}
       </div>
     </div>
   );

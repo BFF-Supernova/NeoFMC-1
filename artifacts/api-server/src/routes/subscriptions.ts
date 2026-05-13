@@ -557,4 +557,61 @@ router.get("/platform-dashboard", requireAuth, requireSuperAdmin, async (_req, r
   }
 });
 
+router.post("/seed-modules", requireAuth, requireSuperAdmin, async (_req, res) => {
+  try {
+    const ALL_MODULES = [
+      { moduleKey: 'moduleCoreBasic', moduleName: 'Core Finance - Basic', moduleNameAr: 'النظام المالي الأساسي', monthlyPrice: '500', annualPrice: '5000', sortOrder: 1 },
+      { moduleKey: 'moduleCoreEdge', moduleName: 'Core Finance - Edge', moduleNameAr: 'النظام المالي المتقدم (Edge)', monthlyPrice: '300', annualPrice: '3000', sortOrder: 2 },
+      { moduleKey: 'moduleAdvancedLending', moduleName: 'Advanced Lending', moduleNameAr: 'الإقراض المتقدم', monthlyPrice: '200', annualPrice: '2000', sortOrder: 3 },
+      { moduleKey: 'moduleFinancialSettlements', moduleName: 'Financial Settlements', moduleNameAr: 'التسويات المالية', monthlyPrice: '150', annualPrice: '1500', sortOrder: 4 },
+      { moduleKey: 'moduleSavings', moduleName: 'Savings & Deposits', moduleNameAr: 'الادخار والودائع', monthlyPrice: '200', annualPrice: '2000', sortOrder: 5 },
+      { moduleKey: 'moduleHRPayroll', moduleName: 'HR & Payroll', moduleNameAr: 'الموارد البشرية والرواتب', monthlyPrice: '250', annualPrice: '2500', sortOrder: 6 },
+      { moduleKey: 'moduleInsurance', moduleName: 'Credit Life Insurance', moduleNameAr: 'التأمين على الائتمان', monthlyPrice: '150', annualPrice: '1500', sortOrder: 7 },
+      { moduleKey: 'moduleAgentBanking', moduleName: 'Agent Banking', moduleNameAr: 'الوكلاء المصرفيون', monthlyPrice: '200', annualPrice: '2000', sortOrder: 8 },
+      { moduleKey: 'moduleLoanRestructuring', moduleName: 'Loan Restructuring', moduleNameAr: 'إعادة هيكلة القروض', monthlyPrice: '100', annualPrice: '1000', sortOrder: 9 },
+      { moduleKey: 'moduleOCR', moduleName: 'OCR Document Processing', moduleNameAr: 'معالجة المستندات بالذكاء الاصطناعي', monthlyPrice: '150', annualPrice: '1500', sortOrder: 10 },
+      { moduleKey: 'moduleWhatsApp', moduleName: 'WhatsApp Business', moduleNameAr: 'واتساب بيزنس', monthlyPrice: '100', annualPrice: '1000', sortOrder: 11 },
+      { moduleKey: 'moduleMobileField', moduleName: 'Mobile Field App (PWA)', moduleNameAr: 'تطبيق الميدان', monthlyPrice: '150', annualPrice: '1500', sortOrder: 12 },
+      { moduleKey: 'moduleClientApp', moduleName: 'Digital Client App', moduleNameAr: 'تطبيق العميل الرقمي', monthlyPrice: '100', annualPrice: '1000', sortOrder: 13 },
+      { moduleKey: 'moduleMobileWallet', moduleName: 'Mobile Wallet Integration', moduleNameAr: 'المحافظ الإلكترونية', monthlyPrice: '150', annualPrice: '1500', sortOrder: 14 },
+      { moduleKey: 'moduleAICollection', moduleName: 'AI Collection Optimization', moduleNameAr: 'تحصيل ذكي بالذكاء الاصطناعي', monthlyPrice: '200', annualPrice: '2000', sortOrder: 15 },
+      { moduleKey: 'moduleDynamicPricing', moduleName: 'Dynamic Loan Pricing', moduleNameAr: 'التسعير الديناميكي', monthlyPrice: '150', annualPrice: '1500', sortOrder: 16 },
+      { moduleKey: 'moduleCashFlowPrediction', moduleName: 'Cash Flow Prediction', moduleNameAr: 'التنبؤ بالتدفقات النقدية', monthlyPrice: '150', annualPrice: '1500', sortOrder: 17 },
+      { moduleKey: 'moduleAIStressTesting', moduleName: 'AI Stress Testing', moduleNameAr: 'اختبارات الضغط بالذكاء الاصطناعي', monthlyPrice: '200', annualPrice: '2000', sortOrder: 18 },
+      { moduleKey: 'moduleNLPReporting', moduleName: 'NLP Reporting', moduleNameAr: 'التقارير السردية (NLP)', monthlyPrice: '150', annualPrice: '1500', sortOrder: 19 },
+      { moduleKey: 'moduleChurnPrediction', moduleName: 'Churn Prediction & Cross-Sell', moduleNameAr: 'التنبؤ بالعملاء المهددين', monthlyPrice: '150', annualPrice: '1500', sortOrder: 20 },
+      { moduleKey: 'moduleIFRS9', moduleName: 'IFRS 9 Provisions', moduleNameAr: 'IFRS 9 والمخصصات', monthlyPrice: '200', annualPrice: '2000', sortOrder: 21 },
+      { moduleKey: 'moduleAIRisk', moduleName: 'AI Risk Engine', moduleNameAr: 'محرك المخاطر الذكي', monthlyPrice: '250', annualPrice: '2500', sortOrder: 22 },
+      { moduleKey: 'moduleFRAReporting', moduleName: 'FRA Digital Reporting', moduleNameAr: 'تقارير الرقابة المالية (FRA)', monthlyPrice: '100', annualPrice: '1000', sortOrder: 23 },
+      { moduleKey: 'moduleIScorelive', moduleName: 'I-Score Live Integration', moduleNameAr: 'I-Score مباشر', monthlyPrice: '200', annualPrice: '2000', sortOrder: 24 },
+      { moduleKey: 'modulePDPL', moduleName: 'Data Protection (PDPL)', moduleNameAr: 'حماية البيانات (PDPL)', monthlyPrice: '100', annualPrice: '1000', sortOrder: 25 },
+      { moduleKey: 'moduleAML', moduleName: 'AML Screening', moduleNameAr: 'مكافحة غسيل الأموال (AML)', monthlyPrice: '150', annualPrice: '1500', sortOrder: 26 },
+      { moduleKey: 'moduleEKYC', moduleName: 'Electronic KYC', moduleNameAr: 'التحقق الإلكتروني (eKYC)', monthlyPrice: '150', annualPrice: '1500', sortOrder: 27 },
+      { moduleKey: 'moduleETA', moduleName: 'E-Invoice (ETA)', moduleNameAr: 'الفاتورة الإلكترونية (ETA)', monthlyPrice: '100', annualPrice: '1000', sortOrder: 28 },
+    ];
+
+    const existing = await db.select({ moduleKey: modulePricingTable.moduleKey }).from(modulePricingTable);
+    const existingKeys = new Set(existing.map(r => r.moduleKey));
+    const toInsert = ALL_MODULES.filter(m => !existingKeys.has(m.moduleKey));
+
+    if (toInsert.length > 0) {
+      await db.insert(modulePricingTable).values(
+        toInsert.map(m => ({
+          ...m,
+          annualPrice: m.annualPrice,
+          isActive: true,
+          description: m.moduleName,
+          descriptionAr: m.moduleNameAr,
+        }))
+      );
+    }
+
+    const all = await db.select().from(modulePricingTable).orderBy(modulePricingTable.sortOrder);
+    res.json({ seeded: toInsert.length, total: all.length, modules: all });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: "server_error", details: String(err) });
+  }
+});
+
 export default router;
