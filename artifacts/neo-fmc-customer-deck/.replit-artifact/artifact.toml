@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/neo-fmc-customer-deck/"
+title = "Neo FMC - Customer Presentation"
+version = "1.0.0"
+id = "artifacts/neo-fmc-customer-deck"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/neo-fmc-customer-deck/" ]
+localPort = 21339
+
+[services.development]
+run = "pnpm --filter @workspace/neo-fmc-customer-deck run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/neo-fmc-customer-deck", "run", "build" ]
+publicDir = "artifacts/neo-fmc-customer-deck/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "21339"
+BASE_PATH = "/neo-fmc-customer-deck/"

@@ -1,0 +1,37 @@
+uploads = []
+
+[[generated]]
+id = "6sNn1iO153HegwdF3QXZp"
+uri = "file://artifacts/neo-fmc-presentation/public/hero.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "YZ6gVdKe_kqj6QzTLzQTs"
+uri = "file://artifacts/neo-fmc-presentation/public/architecture.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "OORAeEaNWd7xyeE8mWo0H"
+uri = "file://artifacts/neo-fmc-customer-deck/public/hero-customer.png"
+type = "image"
+title = "generated_image"
+
+[[generated]]
+id = "P0ZCuVGHVkAGXM8agjFPq"
+uri = "file://artifacts/neo-fmc-customer-deck/public/ai-brain.png"
+type = "image"
+title = "generated_image"
+
+[[outputs]]
+id = "CNdubyjgWZ_UmzWvLs0NX"
+uri = "file://.local/audit-report.md"
+type = "text"
+title = "Neo FMC — GTM Readiness Audit Report"
+
+[[outputs]]
+id = "y7jfsG4n-uPeSszgO7x6v"
+uri = "file://Neo_FMC_User_Roles_Guide.md"
+type = "text"
+title = "Neo FMC - User Roles, Authorizations & Business Scenarios Guide"

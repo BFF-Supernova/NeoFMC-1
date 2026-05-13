@@ -1,0 +1,31 @@
+kind = "slides"
+previewPath = "/neo-fmc-presentation/"
+title = "Neo FMC - Product Presentation"
+version = "1.0.0"
+id = "artifacts/neo-fmc-presentation"
+router = "path"
+
+[[integratedSkills]]
+name = "slides"
+version = "1.0.0"
+
+[[services]]
+name = "web"
+paths = [ "/neo-fmc-presentation/" ]
+localPort = 23107
+
+[services.development]
+run = "pnpm --filter @workspace/neo-fmc-presentation run dev"
+
+[services.production]
+build = [ "pnpm", "--filter", "@workspace/neo-fmc-presentation", "run", "build" ]
+publicDir = "artifacts/neo-fmc-presentation/dist/public"
+serve = "static"
+
+[[services.production.rewrites]]
+from = "/*"
+to = "/index.html"
+
+[services.env]
+PORT = "23107"
+BASE_PATH = "/neo-fmc-presentation/"

@@ -1,0 +1,66 @@
+[
+  {
+    "id": "a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d",
+    "position": 1,
+    "filepath": "src/pages/slides/TitleSlide.tsx",
+    "title": "Neo FMC - The Complete Microfinance ERP Platform",
+    "description": "Title slide introducing Neo FMC as a multi-tenant SaaS platform for Egyptian microfinance institutions",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b2c3d4e5-f6a7-4b8c-9d0e-1f2a3b4c5d6e",
+    "position": 2,
+    "filepath": "src/pages/slides/PlatformOverview.tsx",
+    "title": "Platform Overview",
+    "description": "Overview of platform capabilities including roles, bilingual support, and security architecture",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c3d4e5f6-a7b8-4c9d-0e1f-2a3b4c5d6e7f",
+    "position": 3,
+    "filepath": "src/pages/slides/CoreWorkflow.tsx",
+    "title": "End-to-End Workflow",
+    "description": "The complete microfinance lifecycle from client registration to financial reporting",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d4e5f6a7-b8c9-4d0e-1f2a-3b4c5d6e7f8a",
+    "position": 4,
+    "filepath": "src/pages/slides/ModulesSuite.tsx",
+    "title": "28 Modules Suite",
+    "description": "Modular architecture showcasing core and AI-powered modules available in the platform",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e5f6a7b8-c9d0-4e1f-2a3b-4c5d6e7f8a9b",
+    "position": 5,
+    "filepath": "src/pages/slides/AIAssistant.tsx",
+    "title": "Es2alny AI Assistant",
+    "description": "AI-powered conversational assistant for platform management and data queries",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f6a7b8c9-d0e1-4f2a-3b4c-5d6e7f8a9b0c",
+    "position": 6,
+    "filepath": "src/pages/slides/SecurityCompliance.tsx",
+    "title": "Security and Compliance",
+    "description": "Enterprise security features including RLS, MFA, audit trails, and regulatory compliance",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a7b8c9d0-e1f2-4a3b-4c5d-6e7f8a9b0c1d",
+    "position": 7,
+    "filepath": "src/pages/slides/SuperAdminPlatform.tsx",
+    "title": "SuperAdmin Command Center",
+    "description": "Platform management features including onboarding, alerts, billing, and bulk operations",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b8c9d0e1-f2a3-4b4c-5d6e-7f8a9b0c1d2e",
+    "position": 8,
+    "filepath": "src/pages/slides/ClosingSlide.tsx",
+    "title": "Closing - The Future of Microfinance",
+    "description": "Closing slide with key platform statistics and call to action",
+    "speakerNotes": ""
+  }
+]

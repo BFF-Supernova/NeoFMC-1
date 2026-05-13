@@ -1,0 +1,74 @@
+[
+  {
+    "id": "c1a2b3c4-d5e6-4f7a-8b9c-0d1e2f3a4b5c",
+    "position": 1,
+    "filepath": "src/pages/slides/TitleSlide.tsx",
+    "title": "Neo FMC - Digitize Your Entire Lending Operation",
+    "description": "Customer-facing title slide with key platform statistics and value proposition",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d2b3c4d5-e6f7-4a8b-9c0d-1e2f3a4b5c6d",
+    "position": 2,
+    "filepath": "src/pages/slides/PlatformGlance.tsx",
+    "title": "Platform at a Glance",
+    "description": "Overview of unified platform with lifecycle management, bilingual interface, and role-based access",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e3c4d5e6-f7a8-4b9c-0d1e-2f3a4b5c6d7e",
+    "position": 3,
+    "filepath": "src/pages/slides/CoreLending.tsx",
+    "title": "Core Lending Engine",
+    "description": "Complete loan lifecycle from registration to collection with approval workflows and installment engine",
+    "speakerNotes": ""
+  },
+  {
+    "id": "f4d5e6f7-a8b9-4c0d-1e2f-3a4b5c6d7e8f",
+    "position": 4,
+    "filepath": "src/pages/slides/FinancialModules.tsx",
+    "title": "Financial Management",
+    "description": "General ledger, ETA e-invoicing, IFRS 9 provisioning, and 4-level financial closing",
+    "speakerNotes": ""
+  },
+  {
+    "id": "a5e6f7a8-b9c0-4d1e-2f3a-4b5c6d7e8f9a",
+    "position": 5,
+    "filepath": "src/pages/slides/OperationsSuite.tsx",
+    "title": "Operations and HR Suite",
+    "description": "HR management, payroll, insurance, savings products, branch network, and mobile wallet",
+    "speakerNotes": ""
+  },
+  {
+    "id": "b6f7a8b9-c0d1-4e2f-3a4b-5c6d7e8f9a0b",
+    "position": 6,
+    "filepath": "src/pages/slides/AIIntelligence.tsx",
+    "title": "AI-Powered Intelligence",
+    "description": "Es2alny assistant, AI credit scoring, smart collection engine, and OCR document scanning",
+    "speakerNotes": ""
+  },
+  {
+    "id": "c7a8b9c0-d1e2-4f3a-4b5c-6d7e8f9a0b1c",
+    "position": 7,
+    "filepath": "src/pages/slides/AIDeepDive.tsx",
+    "title": "Es2alny AI Deep Dive",
+    "description": "Role-specific AI use cases for loan officers, branch managers, CFOs, and operations teams",
+    "speakerNotes": ""
+  },
+  {
+    "id": "d8b9c0d1-e2f3-4a4b-5c6d-7e8f9a0b1c2d",
+    "position": 8,
+    "filepath": "src/pages/slides/SecurityCompliance.tsx",
+    "title": "Security and Compliance",
+    "description": "Row-level security, MFA, audit trails, and regulatory compliance (FRA, AML, PDPL, ETA)",
+    "speakerNotes": ""
+  },
+  {
+    "id": "e9c0d1e2-f3a4-4b5c-6d7e-8f9a0b1c2d3e",
+    "position": 9,
+    "filepath": "src/pages/slides/ClosingSlide.tsx",
+    "title": "Your Microfinance, Reimagined",
+    "description": "Closing slide with key stats and call to action for scheduling a demo",
+    "speakerNotes": ""
+  }
+]

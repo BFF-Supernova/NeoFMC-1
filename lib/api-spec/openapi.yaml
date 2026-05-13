@@ -1,0 +1,2511 @@
+openapi: 3.1.0
+info:
+  title: Api
+  version: 0.2.0
+  description: Neo FMC - Multi-tenant Microfinance SaaS API
+servers:
+  - url: /api
+    description: Base API path
+tags:
+  - name: health
+  - name: auth
+  - name: tenants
+  - name: branches
+  - name: users
+  - name: clients
+  - name: fund-products
+  - name: loan-requests
+  - name: loans
+  - name: installments
+  - name: payments
+  - name: sales-agents
+  - name: commissions
+  - name: gl-accounts
+  - name: journal-entries
+  - name: documents
+  - name: risk
+  - name: calculator
+  - name: dashboard
+  - name: settings
+  - name: reports
+
+paths:
+  /healthz:
+    get:
+      operationId: healthCheck
+      tags: [health]
+      summary: Health check
+      responses:
+        "200":
+          description: Healthy
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/HealthStatus"
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [auth]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoginRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoginResponse"
+        "401":
+          description: Unauthorized
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorResponse"
+
+  /auth/me:
+    get:
+      operationId: getMe
+      tags: [auth]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [auth]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /tenants:
+    get:
+      operationId: listTenants
+      tags: [tenants]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/TenantResponse"
+    post:
+      operationId: createTenant
+      tags: [tenants]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateTenantRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+
+  /tenants/{id}:
+    get:
+      operationId: getTenant
+      tags: [tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+    put:
+      operationId: updateTenant
+      tags: [tenants]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTenantRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+
+  /branches:
+    get:
+      operationId: listBranches
+      tags: [branches]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/BranchResponse"
+    post:
+      operationId: createBranch
+      tags: [branches]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBranchRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BranchResponse"
+
+  /branches/{id}:
+    put:
+      operationId: updateBranch
+      tags: [branches]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateBranchRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BranchResponse"
+    delete:
+      operationId: deleteBranch
+      tags: [branches]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SuccessResponse"
+
+  /users:
+    get:
+      operationId: listUsers
+      tags: [users]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/UserResponse"
+    post:
+      operationId: createUser
+      tags: [users]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateUserRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+
+  /users/{id}:
+    put:
+      operationId: updateUser
+      tags: [users]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateUserRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserResponse"
+
+  /clients:
+    get:
+      operationId: listClients
+      tags: [clients]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientListResponse"
+    post:
+      operationId: createClient
+      tags: [clients]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClientRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientResponse"
+
+  /clients/{id}:
+    get:
+      operationId: getClient
+      tags: [clients]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientResponse"
+    put:
+      operationId: updateClient
+      tags: [clients]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateClientRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ClientResponse"
+
+  /fund-products:
+    get:
+      operationId: listFundProducts
+      tags: [fund-products]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/FundProductResponse"
+    post:
+      operationId: createFundProduct
+      tags: [fund-products]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFundProductRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundProductResponse"
+
+  /fund-products/{id}:
+    put:
+      operationId: updateFundProduct
+      tags: [fund-products]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateFundProductRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FundProductResponse"
+
+  /loan-requests:
+    get:
+      operationId: listLoanRequests
+      tags: [loan-requests]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanRequestListResponse"
+    post:
+      operationId: createLoanRequest
+      tags: [loan-requests]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateLoanRequestRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanRequestResponse"
+
+  /loan-requests/{id}:
+    get:
+      operationId: getLoanRequest
+      tags: [loan-requests]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanRequestResponse"
+
+  /loan-requests/{id}/status:
+    put:
+      operationId: updateLoanRequestStatus
+      tags: [loan-requests]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateLoanRequestStatusRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanRequestResponse"
+
+  /loans:
+    get:
+      operationId: listLoans
+      tags: [loans]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanListResponse"
+
+  /loans/{id}:
+    get:
+      operationId: getLoan
+      tags: [loans]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanDetailResponse"
+
+  /loans/{id}/reschedule:
+    post:
+      operationId: rescheduleLoan
+      tags: [loans]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RescheduleLoanRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+
+  /loans/{id}/write-off:
+    post:
+      operationId: writeOffLoan
+      tags: [loans]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/WriteOffLoanRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanResponse"
+
+  /loans/{id}/early-settlement:
+    post:
+      operationId: earlySettlement
+      tags: [loans]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/EarlySettlementResponse"
+
+  /loans/{id}/installments:
+    get:
+      operationId: getLoanInstallments
+      tags: [installments]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/InstallmentResponse"
+
+  /installments/overdue:
+    get:
+      operationId: listOverdueInstallments
+      tags: [installments]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/OverdueInstallmentListResponse"
+
+  /installments/upcoming:
+    get:
+      operationId: listUpcomingInstallments
+      tags: [installments]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: days
+          in: query
+          schema:
+            type: integer
+            default: 7
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UpcomingInstallmentListResponse"
+
+  /payments:
+    post:
+      operationId: recordPayment
+      tags: [payments]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/RecordPaymentRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PaymentResponse"
+
+  /payments/loan/{loanId}:
+    get:
+      operationId: getLoanPayments
+      tags: [payments]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: loanId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PaymentResponse"
+
+  /sales-agents:
+    get:
+      operationId: listSalesAgents
+      tags: [sales-agents]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/SalesAgentResponse"
+    post:
+      operationId: createSalesAgent
+      tags: [sales-agents]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSalesAgentRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesAgentResponse"
+
+  /sales-agents/{id}:
+    put:
+      operationId: updateSalesAgent
+      tags: [sales-agents]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateSalesAgentRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/SalesAgentResponse"
+
+  /commissions:
+    get:
+      operationId: listCommissions
+      tags: [commissions]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+        - name: agentId
+          in: query
+          schema:
+            type: string
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommissionListResponse"
+
+  /commissions/{id}/pay:
+    post:
+      operationId: payCommission
+      tags: [commissions]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CommissionResponse"
+
+  /product-commissions:
+    get:
+      operationId: listProductCommissions
+      tags: [commissions]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: productId
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/ProductCommissionResponse"
+    post:
+      operationId: setProductCommission
+      tags: [commissions]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/SetProductCommissionRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductCommissionResponse"
+
+  /gl-accounts:
+    get:
+      operationId: listGlAccounts
+      tags: [gl-accounts]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/GlAccountResponse"
+    post:
+      operationId: createGlAccount
+      tags: [gl-accounts]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateGlAccountRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/GlAccountResponse"
+
+  /journal-entries:
+    get:
+      operationId: listJournalEntries
+      tags: [journal-entries]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+            default: 1
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 20
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/JournalEntryListResponse"
+
+  /risk-criteria:
+    get:
+      operationId: listRiskCriteria
+      tags: [risk]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/RiskCriteriaResponse"
+    post:
+      operationId: createRiskCriteria
+      tags: [risk]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateRiskCriteriaRequest"
+      responses:
+        "201":
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskCriteriaResponse"
+
+  /clients/{id}/risk-score:
+    get:
+      operationId: calculateClientRiskScore
+      tags: [risk]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RiskScoreResponse"
+
+  /calculator/simulate:
+    post:
+      operationId: simulateLoan
+      tags: [calculator]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/LoanSimulationRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/LoanSimulationResponse"
+
+  /dashboard/kpis:
+    get:
+      operationId: getDashboardKpis
+      tags: [dashboard]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/DashboardKpis"
+
+  /dashboard/par-aging:
+    get:
+      operationId: getParAging
+      tags: [dashboard]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ParAgingResponse"
+
+  /reports/portfolio:
+    get:
+      operationId: getPortfolioReport
+      tags: [reports]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/PortfolioReportResponse"
+
+  /reports/collection:
+    get:
+      operationId: getCollectionReport
+      tags: [reports]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: startDate
+          in: query
+          schema:
+            type: string
+        - name: endDate
+          in: query
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CollectionReportResponse"
+
+  /reports/fra-monthly:
+    get:
+      operationId: getFraMonthlyReport
+      tags: [reports]
+      security: [{ bearerAuth: [] }]
+      parameters:
+        - name: month
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/FraReportResponse"
+
+  /settings:
+    get:
+      operationId: getSettings
+      tags: [settings]
+      security: [{ bearerAuth: [] }]
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+    put:
+      operationId: updateSettings
+      tags: [settings]
+      security: [{ bearerAuth: [] }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateTenantRequest"
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TenantResponse"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+
+  schemas:
+    HealthStatus:
+      type: object
+      properties:
+        status:
+          type: string
+      required: [status]
+
+    ErrorResponse:
+      type: object
+      properties:
+        error:
+          type: string
+        message:
+          type: string
+      required: [error]
+
+    SuccessResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        message:
+          type: string
+      required: [success]
+
+    LoginRequest:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required: [email, password]
+
+    LoginResponse:
+      type: object
+      properties:
+        token:
+          type: string
+        user:
+          $ref: "#/components/schemas/UserResponse"
+      required: [token, user]
+
+    TenantResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        companyName:
+          type: string
+        companyNameAr:
+          type: string
+        fraLicenseNumber:
+          type: string
+        subscriptionPlan:
+          type: string
+        logoUrl:
+          type: string
+          nullable: true
+        isActive:
+          type: boolean
+        contactEmail:
+          type: string
+          nullable: true
+        contactPhone:
+          type: string
+          nullable: true
+        iscoreEnabled:
+          type: boolean
+        epaymentFawryEnabled:
+          type: boolean
+        epaymentOpayEnabled:
+          type: boolean
+        epaymentKhaznaEnabled:
+          type: boolean
+        epaymentMeezaEnabled:
+          type: boolean
+        moduleCoreBasic:
+          type: boolean
+        moduleCoreEdge:
+          type: boolean
+        moduleAdvancedLending:
+          type: boolean
+        moduleFinancialSettlements:
+          type: boolean
+        moduleSavings:
+          type: boolean
+        moduleHRPayroll:
+          type: boolean
+        moduleInsurance:
+          type: boolean
+        moduleAgentBanking:
+          type: boolean
+        moduleLoanRestructuring:
+          type: boolean
+        moduleOCR:
+          type: boolean
+        moduleWhatsApp:
+          type: boolean
+        moduleMobileField:
+          type: boolean
+        moduleClientApp:
+          type: boolean
+        moduleMobileWallet:
+          type: boolean
+        moduleAICollection:
+          type: boolean
+        moduleDynamicPricing:
+          type: boolean
+        moduleCashFlowPrediction:
+          type: boolean
+        moduleAIStressTesting:
+          type: boolean
+        moduleNLPReporting:
+          type: boolean
+        moduleChurnPrediction:
+          type: boolean
+        moduleIFRS9:
+          type: boolean
+        moduleAIRisk:
+          type: boolean
+        moduleFRAReporting:
+          type: boolean
+        moduleIScorelive:
+          type: boolean
+        modulePDPL:
+          type: boolean
+        moduleAML:
+          type: boolean
+        moduleEKYC:
+          type: boolean
+        moduleETA:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, companyName, subscriptionPlan, isActive, createdAt]
+
+    CreateTenantRequest:
+      type: object
+      properties:
+        companyName:
+          type: string
+        companyNameAr:
+          type: string
+        fraLicenseNumber:
+          type: string
+        subscriptionPlan:
+          type: string
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        adminName:
+          type: string
+        adminEmail:
+          type: string
+        adminPassword:
+          type: string
+      required: [companyName, subscriptionPlan, adminEmail, adminPassword]
+
+    UpdateTenantRequest:
+      type: object
+      properties:
+        companyName:
+          type: string
+        companyNameAr:
+          type: string
+        fraLicenseNumber:
+          type: string
+        subscriptionPlan:
+          type: string
+        logoUrl:
+          type: string
+        isActive:
+          type: boolean
+        contactEmail:
+          type: string
+        contactPhone:
+          type: string
+        iscoreEnabled:
+          type: boolean
+        epaymentFawryEnabled:
+          type: boolean
+        epaymentOpayEnabled:
+          type: boolean
+        epaymentKhaznaEnabled:
+          type: boolean
+        epaymentMeezaEnabled:
+          type: boolean
+        moduleCoreBasic:
+          type: boolean
+        moduleCoreEdge:
+          type: boolean
+        moduleAdvancedLending:
+          type: boolean
+        moduleFinancialSettlements:
+          type: boolean
+        moduleSavings:
+          type: boolean
+        moduleHRPayroll:
+          type: boolean
+        moduleInsurance:
+          type: boolean
+        moduleAgentBanking:
+          type: boolean
+        moduleLoanRestructuring:
+          type: boolean
+        moduleOCR:
+          type: boolean
+        moduleWhatsApp:
+          type: boolean
+        moduleMobileField:
+          type: boolean
+        moduleClientApp:
+          type: boolean
+        moduleMobileWallet:
+          type: boolean
+        moduleAICollection:
+          type: boolean
+        moduleDynamicPricing:
+          type: boolean
+        moduleCashFlowPrediction:
+          type: boolean
+        moduleAIStressTesting:
+          type: boolean
+        moduleNLPReporting:
+          type: boolean
+        moduleChurnPrediction:
+          type: boolean
+        moduleIFRS9:
+          type: boolean
+        moduleAIRisk:
+          type: boolean
+        moduleFRAReporting:
+          type: boolean
+        moduleIScorelive:
+          type: boolean
+        modulePDPL:
+          type: boolean
+        moduleAML:
+          type: boolean
+        moduleEKYC:
+          type: boolean
+        moduleETA:
+          type: boolean
+        allowedDomains:
+          type: string
+          nullable: true
+
+    BranchResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        branchNameAr:
+          type: string
+        branchNameEn:
+          type: string
+        mainCashBoxBalance:
+          type: number
+        spendingLimit:
+          type: number
+          nullable: true
+        locationData:
+          type: object
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, branchNameAr, mainCashBoxBalance, createdAt]
+
+    CreateBranchRequest:
+      type: object
+      properties:
+        branchNameAr:
+          type: string
+        branchNameEn:
+          type: string
+        spendingLimit:
+          type: number
+        locationData:
+          type: object
+      required: [branchNameAr]
+
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+          nullable: true
+        branchId:
+          type: string
+          nullable: true
+        fullName:
+          type: string
+        email:
+          type: string
+        role:
+          type: string
+        isSuperUser:
+          type: boolean
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+        modules:
+          type: object
+          nullable: true
+          properties:
+            moduleCoreBasic:
+              type: boolean
+            moduleCoreEdge:
+              type: boolean
+            moduleAdvancedLending:
+              type: boolean
+            moduleFinancialSettlements:
+              type: boolean
+            moduleSavings:
+              type: boolean
+            moduleHRPayroll:
+              type: boolean
+            moduleInsurance:
+              type: boolean
+            moduleAgentBanking:
+              type: boolean
+            moduleLoanRestructuring:
+              type: boolean
+            moduleOCR:
+              type: boolean
+            moduleWhatsApp:
+              type: boolean
+            moduleMobileField:
+              type: boolean
+            moduleClientApp:
+              type: boolean
+            moduleMobileWallet:
+              type: boolean
+            moduleAICollection:
+              type: boolean
+            moduleDynamicPricing:
+              type: boolean
+            moduleCashFlowPrediction:
+              type: boolean
+            moduleAIStressTesting:
+              type: boolean
+            moduleNLPReporting:
+              type: boolean
+            moduleChurnPrediction:
+              type: boolean
+            moduleIFRS9:
+              type: boolean
+            moduleAIRisk:
+              type: boolean
+            moduleFRAReporting:
+              type: boolean
+            moduleIScorelive:
+              type: boolean
+            modulePDPL:
+              type: boolean
+            moduleAML:
+              type: boolean
+            moduleEKYC:
+              type: boolean
+            moduleETA:
+              type: boolean
+      required: [id, fullName, email, role, isActive, createdAt]
+
+    CreateUserRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        email:
+          type: string
+        password:
+          type: string
+        role:
+          type: string
+        branchId:
+          type: string
+      required: [fullName, email, password, role]
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        fullName:
+          type: string
+        role:
+          type: string
+        branchId:
+          type: string
+        isActive:
+          type: boolean
+
+    ClientResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        nationalId:
+          type: string
+        fullNameAr:
+          type: string
+        fullNameEn:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        address:
+          type: string
+          nullable: true
+        riskScore:
+          type: integer
+          nullable: true
+        isBlacklisted:
+          type: boolean
+        blacklistReason:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, nationalId, fullNameAr, isBlacklisted, createdAt]
+
+    CreateClientRequest:
+      type: object
+      properties:
+        nationalId:
+          type: string
+        fullNameAr:
+          type: string
+        fullNameEn:
+          type: string
+        phone:
+          type: string
+        address:
+          type: string
+        riskScore:
+          type: integer
+      required: [nationalId, fullNameAr]
+
+    ClientListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/ClientResponse"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    FundProductResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        productName:
+          type: string
+        interestRateType:
+          type: string
+        interestRate:
+          type: number
+        adminFeePct:
+          type: number
+        insuranceFeePct:
+          type: number
+        amortizationMethod:
+          type: string
+        minAmount:
+          type: number
+        maxAmount:
+          type: number
+        minTermMonths:
+          type: integer
+        maxTermMonths:
+          type: integer
+        gracePeriodDays:
+          type: integer
+        penaltyRatePerDay:
+          type: number
+        penaltyCapPct:
+          type: number
+          nullable: true
+        earlyPaymentFeePct:
+          type: number
+          nullable: true
+        rescheduleFeePct:
+          type: number
+          nullable: true
+        defaultCommissionPct:
+          type: number
+        requiresGuarantor:
+          type: boolean
+        isActive:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, productName, interestRateType, amortizationMethod, minAmount, maxAmount, isActive, createdAt]
+
+    CreateFundProductRequest:
+      type: object
+      properties:
+        productName:
+          type: string
+        interestRateType:
+          type: string
+        interestRate:
+          type: number
+        adminFeePct:
+          type: number
+        insuranceFeePct:
+          type: number
+        amortizationMethod:
+          type: string
+        minAmount:
+          type: number
+        maxAmount:
+          type: number
+        minTermMonths:
+          type: integer
+        maxTermMonths:
+          type: integer
+        gracePeriodDays:
+          type: integer
+        penaltyRatePerDay:
+          type: number
+        penaltyCapPct:
+          type: number
+        earlyPaymentFeePct:
+          type: number
+        rescheduleFeePct:
+          type: number
+        defaultCommissionPct:
+          type: number
+        requiresGuarantor:
+          type: boolean
+      required: [productName, interestRateType, amortizationMethod, minAmount, maxAmount]
+
+    LoanRequestResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        clientId:
+          type: string
+        clientName:
+          type: string
+        productId:
+          type: string
+        productName:
+          type: string
+        requestedAmount:
+          type: number
+        termMonths:
+          type: integer
+        interestRate:
+          type: number
+          nullable: true
+        adminFee:
+          type: number
+          nullable: true
+        insuranceFee:
+          type: number
+          nullable: true
+        workflowStatus:
+          type: string
+        assignedOfficerId:
+          type: string
+          nullable: true
+        salesAgentId:
+          type: string
+          nullable: true
+        salesAgentName:
+          type: string
+          nullable: true
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, clientId, clientName, productId, productName, requestedAmount, workflowStatus, createdAt, updatedAt]
+
+    CreateLoanRequestRequest:
+      type: object
+      properties:
+        clientId:
+          type: string
+        productId:
+          type: string
+        requestedAmount:
+          type: number
+        termMonths:
+          type: integer
+        salesAgentId:
+          type: string
+        notes:
+          type: string
+      required: [clientId, productId, requestedAmount]
+
+    UpdateLoanRequestStatusRequest:
+      type: object
+      properties:
+        workflowStatus:
+          type: string
+        notes:
+          type: string
+        rejectionReason:
+          type: string
+      required: [workflowStatus]
+
+    LoanRequestListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LoanRequestResponse"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    LoanResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        requestId:
+          type: string
+        clientId:
+          type: string
+        clientName:
+          type: string
+        disbursedAmount:
+          type: number
+        outstandingBalance:
+          type: number
+        totalPaid:
+          type: number
+        status:
+          type: string
+        writeOffReason:
+          type: string
+          nullable: true
+        nextInstallmentDate:
+          type: string
+          nullable: true
+        disbursedAt:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, requestId, clientId, clientName, disbursedAmount, outstandingBalance, totalPaid, status, createdAt]
+
+    LoanDetailResponse:
+      type: object
+      properties:
+        loan:
+          $ref: "#/components/schemas/LoanResponse"
+        installments:
+          type: array
+          items:
+            $ref: "#/components/schemas/InstallmentResponse"
+        payments:
+          type: array
+          items:
+            $ref: "#/components/schemas/PaymentResponse"
+      required: [loan, installments, payments]
+
+    LoanListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/LoanResponse"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    RescheduleLoanRequest:
+      type: object
+      properties:
+        newTermMonths:
+          type: integer
+        newInterestRate:
+          type: number
+        reason:
+          type: string
+      required: [newTermMonths, reason]
+
+    WriteOffLoanRequest:
+      type: object
+      properties:
+        reason:
+          type: string
+        notes:
+          type: string
+      required: [reason]
+
+    EarlySettlementResponse:
+      type: object
+      properties:
+        outstandingPrincipal:
+          type: number
+        outstandingInterest:
+          type: number
+        earlySettlementFee:
+          type: number
+        totalDue:
+          type: number
+        loan:
+          $ref: "#/components/schemas/LoanResponse"
+      required: [outstandingPrincipal, outstandingInterest, earlySettlementFee, totalDue, loan]
+
+    InstallmentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        loanId:
+          type: string
+        installmentNumber:
+          type: integer
+        dueDate:
+          type: string
+        principalAmount:
+          type: number
+        interestAmount:
+          type: number
+        totalAmount:
+          type: number
+        paidAmount:
+          type: number
+        penaltyAmount:
+          type: number
+        status:
+          type: string
+        paidDate:
+          type: string
+          nullable: true
+        daysOverdue:
+          type: integer
+      required: [id, loanId, installmentNumber, dueDate, principalAmount, interestAmount, totalAmount, paidAmount, penaltyAmount, status, daysOverdue]
+
+    OverdueInstallmentListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              installment:
+                $ref: "#/components/schemas/InstallmentResponse"
+              clientName:
+                type: string
+              loanId:
+                type: string
+              nationalId:
+                type: string
+            required: [installment, clientName, loanId]
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    UpcomingInstallmentListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              installment:
+                $ref: "#/components/schemas/InstallmentResponse"
+              clientName:
+                type: string
+              loanId:
+                type: string
+            required: [installment, clientName, loanId]
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    RecordPaymentRequest:
+      type: object
+      properties:
+        loanId:
+          type: string
+        installmentId:
+          type: string
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+        referenceNumber:
+          type: string
+        notes:
+          type: string
+      required: [loanId, amount, paymentMethod]
+
+    PaymentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        loanId:
+          type: string
+        installmentId:
+          type: string
+          nullable: true
+        amount:
+          type: number
+        paymentMethod:
+          type: string
+        referenceNumber:
+          type: string
+          nullable: true
+        status:
+          type: string
+        notes:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, loanId, amount, paymentMethod, status, createdAt]
+
+    SalesAgentResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        agentName:
+          type: string
+        agentNameAr:
+          type: string
+          nullable: true
+        agentType:
+          type: string
+        companyName:
+          type: string
+          nullable: true
+        phone:
+          type: string
+          nullable: true
+        email:
+          type: string
+          nullable: true
+        nationalId:
+          type: string
+          nullable: true
+        defaultCommissionPct:
+          type: number
+        isActive:
+          type: boolean
+        totalEarned:
+          type: number
+        pendingAmount:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, agentName, agentType, defaultCommissionPct, isActive, createdAt]
+
+    CreateSalesAgentRequest:
+      type: object
+      properties:
+        agentName:
+          type: string
+        agentNameAr:
+          type: string
+        agentType:
+          type: string
+        companyName:
+          type: string
+        phone:
+          type: string
+        email:
+          type: string
+        nationalId:
+          type: string
+        defaultCommissionPct:
+          type: number
+      required: [agentName, agentType, defaultCommissionPct]
+
+    CommissionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        agentId:
+          type: string
+        agentName:
+          type: string
+        loanId:
+          type: string
+        disbursedAmount:
+          type: number
+        commissionPct:
+          type: number
+        commissionAmount:
+          type: number
+        status:
+          type: string
+        paidAt:
+          type: string
+          nullable: true
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, agentId, agentName, loanId, disbursedAmount, commissionPct, commissionAmount, status, createdAt]
+
+    CommissionListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/CommissionResponse"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+        totalPending:
+          type: number
+        totalPaid:
+          type: number
+      required: [data, total, page, limit, totalPending, totalPaid]
+
+    ProductCommissionResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        productId:
+          type: string
+        agentId:
+          type: string
+        agentName:
+          type: string
+        commissionPct:
+          type: number
+      required: [id, productId, agentId, agentName, commissionPct]
+
+    SetProductCommissionRequest:
+      type: object
+      properties:
+        productId:
+          type: string
+        agentId:
+          type: string
+        commissionPct:
+          type: number
+      required: [productId, agentId, commissionPct]
+
+    GlAccountResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        accountCode:
+          type: string
+        accountName:
+          type: string
+        accountNameAr:
+          type: string
+          nullable: true
+        accountType:
+          type: string
+        costCenterId:
+          type: string
+          nullable: true
+        balance:
+          type: number
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, accountCode, accountName, accountType, balance, createdAt]
+
+    CreateGlAccountRequest:
+      type: object
+      properties:
+        accountCode:
+          type: string
+        accountName:
+          type: string
+        accountNameAr:
+          type: string
+        accountType:
+          type: string
+        costCenterId:
+          type: string
+      required: [accountCode, accountName, accountType]
+
+    JournalEntryResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        tenantId:
+          type: string
+        branchId:
+          type: string
+          nullable: true
+        referenceType:
+          type: string
+        referenceId:
+          type: string
+          nullable: true
+        transactionDate:
+          type: string
+        description:
+          type: string
+        totalDebit:
+          type: number
+        totalCredit:
+          type: number
+        isReconciled:
+          type: boolean
+        createdAt:
+          type: string
+          format: date-time
+      required: [id, tenantId, referenceType, transactionDate, description, totalDebit, totalCredit, isReconciled, createdAt]
+
+    JournalEntryListResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: "#/components/schemas/JournalEntryResponse"
+        total:
+          type: integer
+        page:
+          type: integer
+        limit:
+          type: integer
+      required: [data, total, page, limit]
+
+    RiskCriteriaResponse:
+      type: object
+      properties:
+        id:
+          type: string
+        criteriaName:
+          type: string
+        criteriaNameAr:
+          type: string
+          nullable: true
+        criteriaType:
+          type: string
+        weight:
+          type: integer
+        rules:
+          type: object
+        isActive:
+          type: boolean
+      required: [id, criteriaName, criteriaType, weight, rules, isActive]
+
+    CreateRiskCriteriaRequest:
+      type: object
+      properties:
+        criteriaName:
+          type: string
+        criteriaNameAr:
+          type: string
+        criteriaType:
+          type: string
+        weight:
+          type: integer
+        rules:
+          type: object
+      required: [criteriaName, criteriaType, weight, rules]
+
+    RiskScoreResponse:
+      type: object
+      properties:
+        clientId:
+          type: string
+        totalScore:
+          type: integer
+        maxPossibleScore:
+          type: integer
+        riskLevel:
+          type: string
+        breakdown:
+          type: array
+          items:
+            type: object
+            properties:
+              criteriaName:
+                type: string
+              score:
+                type: integer
+              maxScore:
+                type: integer
+              notes:
+                type: string
+            required: [criteriaName, score, maxScore]
+      required: [clientId, totalScore, maxPossibleScore, riskLevel, breakdown]
+
+    LoanSimulationRequest:
+      type: object
+      properties:
+        amount:
+          type: number
+        termMonths:
+          type: integer
+        interestRate:
+          type: number
+        amortizationMethod:
+          type: string
+        adminFeePct:
+          type: number
+        insuranceFeePct:
+          type: number
+      required: [amount, termMonths, interestRate, amortizationMethod]
+
+    LoanSimulationResponse:
+      type: object
+      properties:
+        monthlyInstallment:
+          type: number
+        totalInterest:
+          type: number
+        totalRepayment:
+          type: number
+        adminFee:
+          type: number
+        insuranceFee:
+          type: number
+        netDisbursement:
+          type: number
+        schedule:
+          type: array
+          items:
+            type: object
+            properties:
+              month:
+                type: integer
+              principal:
+                type: number
+              interest:
+                type: number
+              total:
+                type: number
+              remainingBalance:
+                type: number
+            required: [month, principal, interest, total, remainingBalance]
+      required: [monthlyInstallment, totalInterest, totalRepayment, adminFee, insuranceFee, netDisbursement, schedule]
+
+    DashboardKpis:
+      type: object
+      properties:
+        totalActiveLoans:
+          type: integer
+        totalDisbursedAmount:
+          type: number
+        totalOutstandingBalance:
+          type: number
+        parRatio:
+          type: number
+        collectionRate:
+          type: number
+        totalClients:
+          type: integer
+        newClientsThisMonth:
+          type: integer
+        pendingLoanRequests:
+          type: integer
+        disbursedThisMonth:
+          type: number
+        collectedThisMonth:
+          type: number
+      required: [totalActiveLoans, totalDisbursedAmount, totalOutstandingBalance, parRatio, collectionRate, totalClients, newClientsThisMonth, pendingLoanRequests, disbursedThisMonth, collectedThisMonth]
+
+    ParAgingResponse:
+      type: object
+      properties:
+        current:
+          type: number
+        days1to30:
+          type: number
+        days31to60:
+          type: number
+        days61to90:
+          type: number
+        days91to180:
+          type: number
+        days180plus:
+          type: number
+        totalPar:
+          type: number
+        parRatio:
+          type: number
+      required: [current, days1to30, days31to60, days61to90, days91to180, days180plus, totalPar, parRatio]
+
+    PortfolioReportResponse:
+      type: object
+      properties:
+        totalLoans:
+          type: integer
+        totalDisbursed:
+          type: number
+        totalOutstanding:
+          type: number
+        totalCollected:
+          type: number
+        parRatio:
+          type: number
+        byProduct:
+          type: array
+          items:
+            type: object
+            properties:
+              productName:
+                type: string
+              count:
+                type: integer
+              disbursed:
+                type: number
+              outstanding:
+                type: number
+            required: [productName, count, disbursed, outstanding]
+        byBranch:
+          type: array
+          items:
+            type: object
+            properties:
+              branchName:
+                type: string
+              count:
+                type: integer
+              disbursed:
+                type: number
+              outstanding:
+                type: number
+            required: [branchName, count, disbursed, outstanding]
+      required: [totalLoans, totalDisbursed, totalOutstanding, totalCollected, parRatio, byProduct, byBranch]
+
+    CollectionReportResponse:
+      type: object
+      properties:
+        totalCollected:
+          type: number
+        totalExpected:
+          type: number
+        collectionRate:
+          type: number
+        byMethod:
+          type: array
+          items:
+            type: object
+            properties:
+              method:
+                type: string
+              amount:
+                type: number
+              count:
+                type: integer
+            required: [method, amount, count]
+        byDay:
+          type: array
+          items:
+            type: object
+            properties:
+              date:
+                type: string
+              amount:
+                type: number
+            required: [date, amount]
+      required: [totalCollected, totalExpected, collectionRate, byMethod, byDay]
+
+    FraReportResponse:
+      type: object
+      properties:
+        month:
+          type: string
+        totalActiveLoans:
+          type: integer
+        totalNewLoans:
+          type: integer
+        totalDisbursed:
+          type: number
+        totalCollected:
+          type: number
+        totalOutstanding:
+          type: number
+        totalOverdue:
+          type: number
+        parRatio:
+          type: number
+        totalClients:
+          type: integer
+        newClients:
+          type: integer
+        writeOffs:
+          type: integer
+        writeOffAmount:
+          type: number
+      required: [month, totalActiveLoans, totalNewLoans, totalDisbursed, totalCollected, totalOutstanding, totalOverdue, parRatio, totalClients, newClients, writeOffs, writeOffAmount]
