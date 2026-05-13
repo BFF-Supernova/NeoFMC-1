@@ -13,6 +13,8 @@ import { initScheduler } from "./lib/scheduler";
 
 const app: Express = express();
 
+app.set("trust proxy", 1);
+
 app.use(securityHeadersMiddleware);
 app.use(requestLoggerMiddleware);
 const allowedOrigins = process.env.ALLOWED_ORIGINS
