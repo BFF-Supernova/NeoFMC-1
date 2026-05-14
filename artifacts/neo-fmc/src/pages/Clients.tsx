@@ -97,39 +97,21 @@ export default function Clients() {
 
   const { data: profileDocs, refetch: refetchProfileDocs } = useQuery({
     queryKey: ['/api/documents/profile', selectedClientProfile],
-    queryFn: async () => {
-      const token = localStorage.getItem('neo_fmc_token');
-      const res = await fetch(`${BASE}/api/documents?clientId=${selectedClientProfile}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
-    },
+    queryFn: () => apiFetch(`/documents?clientId=${selectedClientProfile}`),
     enabled: !!selectedClientProfile,
   });
   const profileDocsList = Array.isArray(profileDocs) ? profileDocs : [];
 
   const { data: clientDocs, refetch: refetchDocs } = useQuery({
     queryKey: ['/api/documents', selectedClientForDocs?.id],
-    queryFn: async () => {
-      const token = localStorage.getItem('neo_fmc_token');
-      const res = await fetch(`${BASE}/api/documents?clientId=${selectedClientForDocs.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
-    },
+    queryFn: () => apiFetch(`/documents?clientId=${selectedClientForDocs.id}`),
     enabled: !!selectedClientForDocs,
   });
   const clientDocsList = Array.isArray(clientDocs) ? clientDocs : [];
 
   const { data: newClientDocs, refetch: refetchNewClientDocs } = useQuery({
     queryKey: ['/api/documents/new-client', newClientId],
-    queryFn: async () => {
-      const token = localStorage.getItem('neo_fmc_token');
-      const res = await fetch(`${BASE}/api/documents?clientId=${newClientId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
-    },
+    queryFn: () => apiFetch(`/documents?clientId=${newClientId}`),
     enabled: !!newClientId,
   });
   const newClientDocsList = Array.isArray(newClientDocs) ? newClientDocs : [];

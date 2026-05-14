@@ -40,13 +40,7 @@ export default function Guarantees() {
 
   const { data: guaranteeDocs, refetch: refetchGuaranteeDocs } = useQuery({
     queryKey: ['/api/documents/guarantee', newGuaranteeId],
-    queryFn: async () => {
-      const token = localStorage.getItem('neo_fmc_token');
-      const res = await fetch(`${BASE}/api/documents?guaranteeId=${newGuaranteeId}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
-    },
+    queryFn: () => apiFetch(`/documents?guaranteeId=${newGuaranteeId}`),
     enabled: !!newGuaranteeId,
   });
 
@@ -58,13 +52,7 @@ export default function Guarantees() {
 
   const { data: existingGuaranteeDocs, refetch: refetchExistingDocs } = useQuery({
     queryKey: ['/api/documents/guarantee-existing', selectedGuaranteeForDocs?.id],
-    queryFn: async () => {
-      const token = localStorage.getItem('neo_fmc_token');
-      const res = await fetch(`${BASE}/api/documents?guaranteeId=${selectedGuaranteeForDocs.id}`, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
-      return res.json();
-    },
+    queryFn: () => apiFetch(`/documents?guaranteeId=${selectedGuaranteeForDocs.id}`),
     enabled: !!selectedGuaranteeForDocs,
   });
 
