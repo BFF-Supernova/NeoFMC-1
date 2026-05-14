@@ -1089,6 +1089,14 @@ export default function Clients() {
                               {formatDateTime(doc.createdAt)}
                             </span>
                           </div>
+                          <a
+                            href={`${BASE}/api/documents/download/${doc.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 inline-flex text-xs text-primary hover:underline break-all"
+                          >
+                            {t('عرض المرفق', 'Open attachment')}
+                          </a>
                         </div>
                         <div className="flex items-center gap-1">
                           <a

@@ -501,6 +501,14 @@ export default function Guarantees() {
                               {new Date(doc.createdAt).toLocaleDateString('en-GB')}
                             </span>
                           </div>
+                          <a
+                            href={`${BASE}/api/documents/download/${doc.id}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="mt-1 inline-flex text-xs text-primary hover:underline break-all"
+                          >
+                            {t('عرض المرفق', 'Open attachment')}
+                          </a>
                         </div>
                         <a href={`${BASE}/api/documents/download/${doc.id}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                           <Download size={16} />
