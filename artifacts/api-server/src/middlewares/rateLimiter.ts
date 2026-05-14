@@ -16,7 +16,6 @@ export const apiRateLimiter = rateLimit({
   message: { error: "too_many_requests", message: "Rate limit exceeded. Please slow down." },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
 });
 
 export const sensitiveOpRateLimiter = rateLimit({
@@ -25,7 +24,6 @@ export const sensitiveOpRateLimiter = rateLimit({
   message: { error: "too_many_requests", message: "Too many sensitive operations. Please wait." },
   standardHeaders: true,
   legacyHeaders: false,
-  validate: { xForwardedForHeader: false },
 });
 
 export const webhookRateLimiter = rateLimit({

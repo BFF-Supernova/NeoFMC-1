@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'wouter';
 import { useAuth } from '@/contexts/AuthContext';
-import { useImpersonation } from '@/contexts/ImpersonationContext';
 import { useLanguage } from '@/contexts/LanguageContext';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api';
@@ -23,18 +22,15 @@ import {
   Package, Store, UserCheck, PieChart, RefreshCw, Scale, GraduationCap, User,
   Brain, BookOpen, Umbrella, Building, ScanLine, Smartphone, Target, Coins,
   LineChart, Zap, BotMessageSquare, UserMinus, Fingerprint, FileSpreadsheet, Search,
-  UserCog, AlertTriangle,
 } from 'lucide-react';
 
 export function AppLayout({ children }: { children: React.ReactNode }) {
   const { user, logout } = useAuth();
-  const { isImpersonating, meta: impersonationMeta, endImpersonation } = useImpersonation();
   const { language, setLanguage, t, isRtl } = useLanguage();
   const { theme, setTheme } = useTheme();
   const [location] = useLocation();
   const [isMobileOpen, setIsMobileOpen] = useState(false);
   const [themeMenuOpen, setThemeMenuOpen] = useState(false);
-  const [endingImpersonation, setEndingImpersonation] = useState(false);
 
   const toggleLanguage = () => setLanguage(language === 'ar' ? 'en' : 'ar');
 
@@ -336,49 +332,6 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
       {/* Main Content */}
       <main className="flex-1 flex flex-col min-w-0 bg-background">
-
-        {/* Impersonation Banner */}
-        {isImpersonating && impersonationMeta && (
-          <div className="shrink-0 bg-amber-500 text-amber-950 px-4 py-2.5 flex items-center justify-between gap-4 z-50 shadow-lg">
-            <div className="flex items-center gap-3 min-w-0">
-              <div className="flex items-center justify-center w-7 h-7 rounded-full bg-amber-700/20 shrink-0">
-                <UserCog size={16} className="text-amber-900" />
-              </div>
-              <div className="flex items-center gap-2 flex-wrap min-w-0">
-                <span className="flex items-center gap-1.5 font-semibold text-sm shrink-0">
-                  <AlertTriangle size={14} />
-                  {t('جلسة انتحال هوية', 'Impersonation Session')}
-                </span>
-                <span className="text-sm font-medium truncate">
-                  {impersonationMeta.targetUser.fullName}
-                  <span className="opacity-70 font-normal"> ({impersonationMeta.targetUser.email})</span>
-                </span>
-                <span className="hidden sm:inline text-xs px-2 py-0.5 rounded-full bg-amber-700/20 font-mono shrink-0">
-                  {impersonationMeta.targetUser.role}
-                </span>
-                <span className="hidden md:inline text-xs opacity-80 shrink-0">
-                  {t('السبب', 'Reason')}: <span className="font-medium italic">"{impersonationMeta.reason}"</span>
-                </span>
-              </div>
-            </div>
-            <button
-              onClick={async () => {
-                setEndingImpersonation(true);
-                try { await endImpersonation(); } finally { setEndingImpersonation(false); }
-              }}
-              disabled={endingImpersonation}
-              className="shrink-0 flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-amber-900 text-amber-50 text-xs font-semibold hover:bg-amber-950 transition-colors disabled:opacity-60"
-            >
-              {endingImpersonation ? (
-                <div className="w-3 h-3 border border-amber-200 border-t-transparent rounded-full animate-spin" />
-              ) : (
-                <X size={13} />
-              )}
-              {t('إنهاء الجلسة', 'End Session')}
-            </button>
-          </div>
-        )}
-
         {/* Top Header */}
         <header className="h-14 sm:h-20 shrink-0 border-b border-border bg-card/50 backdrop-blur-md flex items-center justify-between px-3 sm:px-6 sticky top-0 z-30">
           <div className="flex items-center gap-2 sm:gap-4 min-w-0">
