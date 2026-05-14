@@ -91,6 +91,7 @@ export default function Clients() {
     },
     enabled: !!selectedClientProfile,
   });
+  const profileDocsList = Array.isArray(profileDocs) ? profileDocs : [];
 
   const { data: clientDocs, refetch: refetchDocs } = useQuery({
     queryKey: ['/api/documents', selectedClientForDocs?.id],
@@ -103,6 +104,7 @@ export default function Clients() {
     },
     enabled: !!selectedClientForDocs,
   });
+  const clientDocsList = Array.isArray(clientDocs) ? clientDocs : [];
 
   const { data: newClientDocs, refetch: refetchNewClientDocs } = useQuery({
     queryKey: ['/api/documents/new-client', newClientId],
@@ -115,6 +117,7 @@ export default function Clients() {
     },
     enabled: !!newClientId,
   });
+  const newClientDocsList = Array.isArray(newClientDocs) ? newClientDocs : [];
 
   const deletDocMutation = useMutation({
     mutationFn: async (docId: string) => {
@@ -153,7 +156,7 @@ export default function Clients() {
           reader.readAsDataURL(file);
         });
 
-        const existingDocs = clientDocs?.filter((d: any) => d.documentType === docType) || [];
+        const existingDocs = clientDocsList.filter((d: any) => d.documentType === docType);
         const nextVersion = existingDocs.length > 0 ? Math.max(...existingDocs.map((d: any) => d.version || 1)) + 1 : 1;
 
         const token = localStorage.getItem('neo_fmc_token');
@@ -454,6 +457,7 @@ export default function Clients() {
     },
     enabled: !!editingClient,
   });
+  const editClientDocsList = Array.isArray(editClientDocs) ? editClientDocs : [];
 
   const editDocFileRef = useRef<HTMLInputElement>(null);
   const [editDocType, setEditDocType] = useState('NationalID');
@@ -482,7 +486,7 @@ export default function Clients() {
           reader.readAsDataURL(file);
         });
 
-        const existingDocs = editClientDocs?.filter((d: any) => d.documentType === editDocType) || [];
+        const existingDocs = editClientDocsList.filter((d: any) => d.documentType === editDocType);
         const nextVersion = existingDocs.length > 0 ? Math.max(...existingDocs.map((d: any) => d.version || 1)) + 1 : 1;
 
         const token = localStorage.getItem('neo_fmc_token');
@@ -814,16 +818,16 @@ export default function Clients() {
                 <div className="space-y-2">
                   <p className="text-sm font-bold text-muted-foreground flex items-center gap-2">
                     <FileText size={16} />
-                    {t('المستندات المرفقة', 'Attached Documents')} ({newClientDocs?.length || 0})
+                    {t('المستندات المرفقة', 'Attached Documents')} ({newClientDocsList.length})
                   </p>
-                  {(!newClientDocs || newClientDocs.length === 0) ? (
+                  {newClientDocsList.length === 0 ? (
                     <div className="premium-card p-6 text-center border-dashed bg-transparent">
                       <FileText size={28} className="mx-auto mb-2 opacity-20 text-muted-foreground" />
                       <p className="text-sm text-muted-foreground">{t('لم يتم إرفاق مستندات بعد', 'No documents attached yet')}</p>
                     </div>
                   ) : (
                     <div className="space-y-2">
-                      {newClientDocs.map((doc: any) => (
+                      {newClientDocsList.map((doc: any) => (
                         <div key={doc.id} className="premium-card p-3 flex items-center gap-3">
                           <div className="w-8 h-8 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
                             <FileText size={16} className="text-red-400" />
@@ -974,9 +978,9 @@ export default function Clients() {
                     </div>
                     <input ref={editDocFileRef} type="file" accept=".pdf,application/pdf" multiple className="hidden" onChange={handleEditDocUpload} />
                   </div>
-                  {editClientDocs && editClientDocs.length > 0 && (
+                  {editClientDocsList.length > 0 && (
                     <div className="space-y-1.5 max-h-40 overflow-y-auto custom-scrollbar">
-                      {editClientDocs.map((doc: any) => (
+                      {editClientDocsList.map((doc: any) => (
                         <div key={doc.id} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30 text-sm">
                           <FileText size={14} className="text-red-400 shrink-0" />
                           <span className="flex-1 truncate">{doc.documentName}</span>
@@ -1061,16 +1065,16 @@ export default function Clients() {
               <div className="space-y-2">
                 <p className="text-sm font-bold text-muted-foreground flex items-center gap-2">
                   <FileText size={16} />
-                  {t('المستندات المرفقة', 'Attached Documents')} ({clientDocs?.length || 0})
+                  {t('المستندات المرفقة', 'Attached Documents')} ({clientDocsList.length})
                 </p>
-                {!clientDocs || clientDocs.length === 0 ? (
+                {clientDocsList.length === 0 ? (
                   <div className="premium-card p-8 text-center border-dashed bg-transparent">
                     <FileText size={32} className="mx-auto mb-3 opacity-20 text-muted-foreground" />
                     <p className="text-sm text-muted-foreground">{t('لا توجد مرفقات بعد', 'No attachments yet')}</p>
                   </div>
                 ) : (
                   <div className="space-y-2">
-                    {clientDocs.map((doc: any) => (
+                    {clientDocsList.map((doc: any) => (
                       <div key={doc.id} className="premium-card p-4 flex items-center gap-4 group">
                         <div className="w-10 h-10 rounded-lg bg-red-500/10 flex items-center justify-center shrink-0">
                           <FileText size={20} className="text-red-400" />
@@ -1397,14 +1401,14 @@ export default function Clients() {
                     </div>
                   </div>
 
-                  {profileDocs && profileDocs.length > 0 && (
+                  {profileDocsList.length > 0 && (
                     <div className="premium-card p-4 space-y-3">
                       <p className="text-sm font-bold flex items-center gap-2">
                         <Paperclip size={14} />
-                        {t('المستندات', 'Documents')} ({profileDocs.length})
+                        {t('المستندات', 'Documents')} ({profileDocsList.length})
                       </p>
                       <div className="space-y-1.5 max-h-48 overflow-y-auto custom-scrollbar">
-                        {profileDocs.map((doc: any) => (
+                        {profileDocsList.map((doc: any) => (
                           <div key={doc.id} className="flex items-center gap-3 p-2 rounded-lg bg-secondary/30 text-sm">
                             <FileText size={14} className="text-red-400 shrink-0" />
                             <span className="flex-1 truncate">{doc.documentName}</span>
