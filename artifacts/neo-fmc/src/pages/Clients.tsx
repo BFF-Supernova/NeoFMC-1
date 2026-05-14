@@ -986,7 +986,7 @@ export default function Clients() {
                           <span className="flex-1 truncate">{doc.documentName}</span>
                           <span className="text-xs px-1.5 py-0.5 bg-secondary rounded">{doc.documentType}</span>
                           <span className="text-xs text-muted-foreground">v{doc.version || 1}</span>
-                          <a href={`${BASE}/api/documents/download/${doc.id}?token=${localStorage.getItem('neo_fmc_token')}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                          <a href={`${BASE}/api/documents/download/${doc.id}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                             <Download size={14} />
                           </a>
                         </div>
@@ -1092,7 +1092,7 @@ export default function Clients() {
                         </div>
                         <div className="flex items-center gap-1">
                           <a
-                            href={`${BASE}/api/documents/download/${doc.id}?token=${localStorage.getItem('neo_fmc_token')}`}
+                            href={`${BASE}/api/documents/download/${doc.id}`}
                             target="_blank"
                             rel="noopener noreferrer"
                             className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors"
@@ -1414,7 +1414,7 @@ export default function Clients() {
                             <span className="flex-1 truncate">{doc.documentName}</span>
                             <span className="text-xs px-1.5 py-0.5 bg-secondary rounded">{doc.documentType}</span>
                             <span className="text-xs text-muted-foreground">v{doc.version || 1}</span>
-                            <a href={`${BASE}/api/documents/download/${doc.id}?token=${localStorage.getItem('neo_fmc_token')}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
+                            <a href={`${BASE}/api/documents/download/${doc.id}`} target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary">
                               <Download size={14} />
                             </a>
                           </div>

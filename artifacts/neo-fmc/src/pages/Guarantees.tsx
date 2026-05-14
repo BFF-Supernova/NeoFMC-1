@@ -502,7 +502,7 @@ export default function Guarantees() {
                             </span>
                           </div>
                         </div>
-                        <a href={`${BASE}/api/documents/download/${doc.id}?token=${localStorage.getItem('neo_fmc_token')}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
+                        <a href={`${BASE}/api/documents/download/${doc.id}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-lg text-muted-foreground hover:text-primary hover:bg-primary/10 transition-colors">
                           <Download size={16} />
                         </a>
                       </div>
