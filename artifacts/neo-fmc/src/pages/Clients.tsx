@@ -118,15 +118,22 @@ export default function Clients() {
 
   const deletDocMutation = useMutation({
     mutationFn: async (docId: string) => {
-      const token = localStorage.getItem('neo_fmc_token');
-      await fetch(`${BASE}/api/documents/${docId}`, {
-        method: 'DELETE',
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await apiFetch(`/documents/${docId}`, { method: 'DELETE' });
     },
-    onSuccess: () => {
+    onSuccess: (_, docId) => {
       toast({ title: t('تم الحذف', 'Deleted') });
+      queryClient.setQueryData(['/api/documents', selectedClientForDocs?.id], (old: any) =>
+        Array.isArray(old) ? old.filter((doc: any) => doc.id !== docId) : old
+      );
+      queryClient.setQueryData(['/api/documents/profile', selectedClientProfile], (old: any) =>
+        Array.isArray(old) ? old.filter((doc: any) => doc.id !== docId) : old
+      );
+      queryClient.setQueryData(['/api/documents/new-client', newClientId], (old: any) =>
+        Array.isArray(old) ? old.filter((doc: any) => doc.id !== docId) : old
+      );
       refetchDocs();
+      refetchProfileDocs();
+      refetchNewClientDocs();
     }
   });
 
