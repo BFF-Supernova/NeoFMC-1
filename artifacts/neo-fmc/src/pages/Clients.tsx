@@ -32,6 +32,7 @@ export default function Clients() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const [uploading, setUploading] = useState(false);
   const [docType, setDocType] = useState('NationalID');
+  const [docUploadError, setDocUploadError] = useState<string | null>(null);
 
   const [selectedClientForKyc, setSelectedClientForKyc] = useState<any>(null);
   const [kycForm, setKycForm] = useState({ kycStatus: 'Pending', kycNotes: '' });
@@ -144,6 +145,7 @@ export default function Clients() {
       }
 
       setUploading(true);
+      setDocUploadError(null);
       try {
         const reader = new FileReader();
         const base64 = await new Promise<string>((resolve) => {
@@ -171,10 +173,14 @@ export default function Clients() {
         if (res.ok) {
           toast({ title: t('تم الرفع', 'Uploaded'), description: `${file.name} (v${nextVersion})` });
         } else {
-          toast({ title: t('فشل الرفع', 'Upload Failed'), variant: 'destructive' });
+          const err = await res.json().catch(() => ({}));
+          const message = err.message || err.error || t('فشل الرفع', 'Upload Failed');
+          setDocUploadError(String(message));
+          toast({ title: t('فشل الرفع', 'Upload Failed'), description: String(message), variant: 'destructive' });
         }
       } catch {
-        toast({ title: t('خطأ', 'Error'), variant: 'destructive' });
+        setDocUploadError(t('حدث خطأ غير متوقع أثناء الرفع', 'An unexpected upload error occurred'));
+        toast({ title: t('خطأ', 'Error'), description: t('حدث خطأ غير متوقع أثناء الرفع', 'An unexpected upload error occurred'), variant: 'destructive' });
       }
       setUploading(false);
     }
@@ -468,6 +474,7 @@ export default function Clients() {
       }
 
       setEditUploading(true);
+      setDocUploadError(null);
       try {
         const reader = new FileReader();
         const base64 = await new Promise<string>((resolve) => {
@@ -496,10 +503,14 @@ export default function Clients() {
           toast({ title: t('تم الرفع', 'Uploaded'), description: `${file.name} (v${nextVersion})` });
           refetchEditDocs();
         } else {
-          toast({ title: t('فشل الرفع', 'Upload Failed'), variant: 'destructive' });
+          const err = await res.json().catch(() => ({}));
+          const message = err.message || err.error || t('فشل الرفع', 'Upload Failed');
+          setDocUploadError(String(message));
+          toast({ title: t('فشل الرفع', 'Upload Failed'), description: String(message), variant: 'destructive' });
         }
       } catch {
-        toast({ title: t('خطأ', 'Error'), variant: 'destructive' });
+        setDocUploadError(t('حدث خطأ غير متوقع أثناء الرفع', 'An unexpected upload error occurred'));
+        toast({ title: t('خطأ', 'Error'), description: t('حدث خطأ غير متوقع أثناء الرفع', 'An unexpected upload error occurred'), variant: 'destructive' });
       }
       setEditUploading(false);
     }
@@ -1044,6 +1055,7 @@ export default function Clients() {
                   onChange={handleFileUpload}
                 />
                 <p className="text-xs text-muted-foreground">{t('الحد الأقصى 10 ميجابايت لكل ملف. النسخ القديمة تبقى محفوظة.', 'Max 10MB per file. Old versions are kept.')}</p>
+                {docUploadError && <p className="text-xs text-red-400">{docUploadError}</p>}
               </div>
 
               <div className="space-y-2">
