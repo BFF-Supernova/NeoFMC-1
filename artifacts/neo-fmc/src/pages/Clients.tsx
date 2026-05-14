@@ -68,6 +68,21 @@ export default function Clients() {
 
   const BASE = import.meta.env.BASE_URL.replace(/\/$/, '');
 
+  const uploadDocJson = async (body: Record<string, unknown>) => {
+    const token = localStorage.getItem('neo_fmc_token');
+    const tenantId = localStorage.getItem('neo_fmc_sa_tenant');
+    return fetch(`${BASE}/api/documents/upload`, {
+      method: 'POST',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && token !== 'session' ? { Authorization: `Bearer ${token}` } : {}),
+        ...(tenantId ? { 'X-Tenant-Id': tenantId } : {}),
+      },
+      body: JSON.stringify(body),
+    });
+  };
+
   const profileQuery = useQuery({
     queryKey: ['/api/clients/profile', selectedClientProfile],
     queryFn: async () => {
@@ -159,18 +174,13 @@ export default function Clients() {
         const existingDocs = clientDocsList.filter((d: any) => d.documentType === docType);
         const nextVersion = existingDocs.length > 0 ? Math.max(...existingDocs.map((d: any) => d.version || 1)) + 1 : 1;
 
-        const token = localStorage.getItem('neo_fmc_token');
-        const res = await fetch(`${BASE}/api/documents/upload`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({
-            clientId: selectedClientForDocs.id,
-            documentType: docType,
-            documentName: file.name,
-            fileContent: base64,
-            mimeType: 'application/pdf',
-            version: nextVersion,
-          })
+        const res = await uploadDocJson({
+          clientId: selectedClientForDocs.id,
+          documentType: docType,
+          documentName: file.name,
+          fileContent: base64,
+          mimeType: 'application/pdf',
+          version: nextVersion,
         });
 
         if (res.ok) {
@@ -213,17 +223,12 @@ export default function Clients() {
           reader.readAsDataURL(file);
         });
 
-        const token = localStorage.getItem('neo_fmc_token');
-        const res = await fetch(`${BASE}/api/documents/upload`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({
-            clientId: newClientId,
-            documentType: createDocType,
-            documentName: file.name,
-            fileContent: base64,
-            mimeType: 'application/pdf',
-          })
+        const res = await uploadDocJson({
+          clientId: newClientId,
+          documentType: createDocType,
+          documentName: file.name,
+          fileContent: base64,
+          mimeType: 'application/pdf',
         });
 
         if (res.ok) {
@@ -489,18 +494,13 @@ export default function Clients() {
         const existingDocs = editClientDocsList.filter((d: any) => d.documentType === editDocType);
         const nextVersion = existingDocs.length > 0 ? Math.max(...existingDocs.map((d: any) => d.version || 1)) + 1 : 1;
 
-        const token = localStorage.getItem('neo_fmc_token');
-        const res = await fetch(`${BASE}/api/documents/upload`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${token}` },
-          body: JSON.stringify({
-            clientId: editingClient.id,
-            documentType: editDocType,
-            documentName: file.name,
-            fileContent: base64,
-            mimeType: 'application/pdf',
-            version: nextVersion,
-          })
+        const res = await uploadDocJson({
+          clientId: editingClient.id,
+          documentType: editDocType,
+          documentName: file.name,
+          fileContent: base64,
+          mimeType: 'application/pdf',
+          version: nextVersion,
         });
 
         if (res.ok) {
